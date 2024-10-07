@@ -45,7 +45,7 @@ const displayVideos = (videos) => {
     videoContainer.classList.remove("grid");
     videoContainer.innerHTML = `
     <div class="min-h-[300px] w-full flex flex-col gap-5 justify-center items-center">
-    <img src="../assets/icon.png" alt="" />
+    <img src="../img/icon.png" alt="" />
     <h2 class="text-2xl font-bold text-center">Oops!! Sorry, There is no <br /> content here</h2>
     </div>
     `;
