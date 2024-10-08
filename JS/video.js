@@ -11,7 +11,7 @@ function getTimeString(time) {
 
 const removeActiveClass = () => {
   const button = document.getElementsByClassName("category-btn");
-  console.log(button);
+  // console.log(button);
 
   for (let btn of button) {
     btn.classList.remove("active");
@@ -54,6 +54,29 @@ const loadCategoriesVideos = (id) => {
     .catch((error) => console.log(error));
 };
 
+const loadDetails = async (videoId) => {
+  // console.log(videoId);
+  const uri = `https://openapi.programming-hero.com/api/phero-tube/video/${videoId}`;
+  const res = await fetch(uri);
+  const data = await res.json();
+  displayDetails(data.video);
+};
+
+const displayDetails = (video) => {
+  // console.log(video);
+  const detailsContainer = document.getElementById("modal-content");
+
+  detailsContainer.innerHTML = `
+  <img src="${video.thumbnail}" />
+  <p>${video.description}</p>;
+  `;
+
+  // way-1
+  // document.getElementById("showModalData").click();
+  // way - 2;
+  document.getElementById("customModal").showModal();
+};
+
 const displayVideos = (videos) => {
   const videoContainer = document.getElementById("videos");
   videoContainer.innerHTML = "";
@@ -75,7 +98,7 @@ const displayVideos = (videos) => {
   }
 
   videos.forEach((video) => {
-    console.log(video);
+    // console.log(video);
 
     const card = document.createElement("div");
     card.classList = "card card-compact";
@@ -110,7 +133,9 @@ const displayVideos = (videos) => {
         : ""
     }
     </div>
-    <p></p>
+    <p> <button onclick="loadDetails('${
+      video.video_id
+    }')" class=" btn btn-sm btn-error"> details</button></p>
     </div>
     </div>
   </div>
@@ -123,7 +148,7 @@ const displayCategories = (categories) => {
   const categoryContainer = document.getElementById("categories");
   // add data in html
   categories.forEach((item) => {
-    console.log(item);
+    // console.log(item);
     // create a button
     const buttonContainer = document.createElement("div");
     buttonContainer.innerHTML = `
