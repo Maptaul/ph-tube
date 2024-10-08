@@ -9,6 +9,15 @@ function getTimeString(time) {
   return `${hour} hour ${minute} minute ${remainingSecond}  second ago`;
 }
 
+const removeActiveClass = () => {
+  const button = document.getElementsByClassName("category-btn");
+  console.log(button);
+
+  for (let btn of button) {
+    btn.classList.remove("active");
+  }
+};
+
 /* 
 1. fetch, load and show category data
 */
@@ -20,20 +29,28 @@ const loadCategories = () => {
     .catch((error) => console.log(error));
 };
 
-const loadCategoriesVideos = (id) => {
-  //fetch the data
-  // alert(id);
-  fetch(`https://openapi.programming-hero.com/api/phero-tube/category/${id}`)
-    .then((res) => res.json())
-    .then((data) => displayVideos(data.category))
-    .catch((error) => console.log(error));
-};
-
 const loadVideos = () => {
   //fetch the data
   fetch("https://openapi.programming-hero.com/api/phero-tube/videos")
     .then((res) => res.json())
     .then((data) => displayVideos(data.videos))
+    .catch((error) => console.log(error));
+};
+
+const loadCategoriesVideos = (id) => {
+  //fetch the data
+  // alert(id);
+  fetch(`https://openapi.programming-hero.com/api/phero-tube/category/${id}`)
+    .then((res) => res.json())
+    .then((data) => {
+      // sby k active class remove
+      removeActiveClass();
+
+      // sby k active add kor
+      const activeBtn = document.getElementById(`btn-${id}`);
+      activeBtn.classList.add("active");
+      displayVideos(data.category);
+    })
     .catch((error) => console.log(error));
 };
 
@@ -45,8 +62,11 @@ const displayVideos = (videos) => {
     videoContainer.classList.remove("grid");
     videoContainer.innerHTML = `
     <div class="min-h-[300px] w-full flex flex-col gap-5 justify-center items-center">
-    <img src="../img/icon.png" alt="" />
-    <h2 class="text-2xl font-bold text-center">Oops!! Sorry, There is no <br /> content here</h2>
+        <img src="img/icon.png" alt="" />
+        <h2 
+        class="text-2xl font-bold text-center">
+        Oops!! Sorry, There is no <br /> content here
+        </h2>
     </div>
     `;
     return;
@@ -68,22 +88,22 @@ const displayVideos = (videos) => {
       ${
         video.others.posted_date?.length == 0
           ? ""
-          : `<span class="absolute right-2 bottom-3 text-xs bg-gray-500 text-white rounded-md p-1">${getTimeString(
-              video.others.posted_date
-            )}</span>`
+          : `<span 
+          class="absolute right-2 bottom-3 text-xs bg-gray-500 text-white rounded-md p-1">
+          ${getTimeString(video.others.posted_date)}</span>`
       }
       
   </figure>
   <div class="px-0 py-2 flex gap-2">
     <div>
-    <img class="w-10 h-10 rounded-full" 
-    src="${video.authors[0].profile_picture}" 
-    alt="profile_picture" />
+        <img class="w-10 h-10 rounded-full" 
+        src="${video.authors[0].profile_picture}" 
+        alt="profile_picture" />
     </div>
     <div>
-    <h2 class="font-bold"> ${video.title}</h2>
+        <h2 class="font-bold"> ${video.title}</h2>
     <div class="flex gap-2 items-center">
-    <p class ="text-gray-400">${video.authors[0].profile_name}</p>
+        <p class ="text-gray-400">${video.authors[0].profile_name}</p>
     ${
       video.authors[0].verified == true
         ? '<img class="w-5" src="https://img.icons8.com/?size=100&id=2sZ0sdlG9kWP&format=png&color=000000" alt="" />'
@@ -91,7 +111,6 @@ const displayVideos = (videos) => {
     }
     </div>
     <p></p>
-    
     </div>
     </div>
   </div>
@@ -108,10 +127,11 @@ const displayCategories = (categories) => {
     // create a button
     const buttonContainer = document.createElement("div");
     buttonContainer.innerHTML = `
-    <button onclick="loadCategoriesVideos(${item.category_id})"  class= "btn ">
-    ${item.category}</button>
-    
-    
+    <button 
+      id="btn-${item.category_id}" 
+      onclick="loadCategoriesVideos(${item.category_id})"  
+      class= "btn category-btn">
+      ${item.category}</button>
     `;
     // add button to category
 
